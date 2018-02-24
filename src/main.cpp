@@ -3,6 +3,7 @@
 #endif
 
 
+#include "glfwwindowmanager.h"
 #include "inputmanager.h"
 #include "ugine.h"
 #include "globals.h"
@@ -13,18 +14,14 @@
 using namespace std;
 
 int main() {
-	// Inicializamos GLFW
-	if (!glfwInit()) {
-		cout << "Error: No se ha podido inicializar GLFW" << endl;
-		return -1;
-	}
-	atexit(glfwTerminate);
+
+	GlfwWindowManager * pWindowManager = GlfwWindowManager::Instance();
 
 	// Bucle principal
-	double lastTime = glfwGetTime();
+	double lastTime = pWindowManager->GetTime();
 	Vec2 screenSize;
 
-	while (!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+	while (!pWindowManager->WindowShouldClose() && !glfwGetKey(window, GLFW_KEY_ESCAPE)) {
 		// Actualizamos delta
 		float deltaTime = static_cast<float>(glfwGetTime() - lastTime);
 		lastTime = glfwGetTime();

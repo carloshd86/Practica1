@@ -5,7 +5,7 @@
 
 // Constructors
 
-EntityPlayer::EntityPlayer(int priority) : m_priority(priority) {}
+EntityPlayer::EntityPlayer(int priority) : mPriority(priority) {}
 
 
 // Public
@@ -13,8 +13,8 @@ EntityPlayer::EntityPlayer(int priority) : m_priority(priority) {}
 int EntityPlayer::Init() { 
 	InputManager * pInputManager = InputManager::Instance();
 	ASSERT(pInputManager);
-	pInputManager ->Register(this, IEventManager::TEvent::ELeftClick , m_priority); 
-	pInputManager ->Register(this, IEventManager::TEvent::EKeyPressed, m_priority); 
+	pInputManager ->Register(this, IEventManager::TEvent::ELeftClick , mPriority); 
+	pInputManager ->Register(this, IEventManager::TEvent::EKeyPressed, mPriority); 
 }
 
 bool EntityPlayer::ProcessEvent(const CEvent &event) {
@@ -35,5 +35,5 @@ bool EntityPlayer::ProcessEvent(const CEvent &event) {
 	return true;
 }
 
-int  EntityPlayer::GetPriority() const       { return m_priority; }
-void EntityPlayer::SetPriority(int priority) { m_priority = priority; }
+int  EntityPlayer::GetPriority() const       { return mPriority; }
+void EntityPlayer::SetPriority(int priority) { mPriority = priority; }

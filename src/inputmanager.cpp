@@ -1,7 +1,7 @@
 #include "inputmanager.h"
 #include "globals.h"
 #include "glfwwindowmanager.h"
-
+#include "asserts.h"
 
 #define LITE_GFX_IMPLEMENTATION
 #include "litegfx.h"
@@ -9,76 +9,64 @@
 // Constructors
 
 InputManager::InputManager() :
-	m_initialized (false) {}
+	mInitialized (false) {}
 
 
 //Destructor
 
 InputManager::~InputManager() {
-	if (m_initalized)
+	if (mInitalized)
 		End();
 }
 
 // Public
 
 InputManager * InputManager::Instance() {
-	if (!m_instance) {
-		m_instance = new InputManager();
-		m_instance->Init();
+	if (!mInstance) {
+		mInstance = new InputManager();
+		mInstance->Init();
 	}
 
-	return m_instance;
+	return mInstance;
 }
 
 IEventManager::EM_Err InputManager::Init() {
 
-	// Init glfw
-	if (!glfwInit())
-		return KO;
+	if (mInitialized)
+		return OK;
 
-	// Creating the window
-	glfwWindowHint(GLFW_RESIZABLE, true);
-	GLFWwindow* glfwWindow = glfwCreateWindow(GlobalConstants::SCREEN_WIDTH, GlobalConstants::SCREEN_HEIGHT, "Interfaz Usuario | InputManager", nullptr, nullptr);
-	if (!glfwWindow)
-		return KO;
+	m_pWindowManager = GlfwWindowManager::Instance();
 
-	// Activating OpenGL
-	glfwMakeContextCurrent(GLFWWINDOW);
-
-	// Seting glfw window user pointer to this InputManager
-	glfwSetWindowUserPointer(glfwWindow, this);
+	ASSERT(m_pWindowManager);
 
 	// Setting events
 	// Mouse Move
-	auto mouseMoveFunc = [](Window* window, double xpos, double ypos)
+	IWindowManager::WindowMouseMoveFun mouseMoveFunc = [this](double xpos, double ypos)
 	{
-		static_cast<InputManager*>(glfwGetWindowUserPointer(window))->MouseMove(window, xpos, ypos);
+		MouseMove(xpos, ypos);
 	};
-	glfwSetCursorPosCallback(glfwWindow, mouseMoveFunc);
+	m_pWindowManager->SetMouseMoveCallback(mouseMoveFunc);
 
 	// Mouse Click
-	auto mouseClickFunc = [](Window* window, int button, int action, int mods)
+	IWindowManager::WindowMouseClickFun mouseClickFunc = [this](int button, int action, int mods)
 	{
-		static_cast<InputManager*>(glfwGetWindowUserPointer(window))->MouseClick(window, button, action, mods);
+		MouseClick(button, action, mods);
 	};
-	glfwSetMouseButtonCallback(glfwWindow, mouseClickFunc);
+	m_pWindowManager->SetMouseClickCallback(mouseClickFunc);
 	
 	// Mouse Click
-	auto keyPressedFunc = [](Window* window, int key, int scancode, int action, int mods)
+	IWindowManager::WindowKeyFun keyPressedFunc = [this](int key, int scancode, int action, int mods)
 	{
-		static_cast<InputManager*>(glfwGetWindowUserPointer(window))->KeyPressed(window, key, scancode, action, mods);
+		KeyPressed(key, scancode, action, mods);
 	};
-	glfwSetKeyCallback(glfwWindow, keyPressedFunc);
+	m_pWindowManager->SetKeyPressedCallback(keyPressedFunc);
 
 
-	m_initialized = true;
+	mInitialized = true;
 	return OK;
 }
 
 IEventManager::EM_Err InputManager::End() {
-
-	if (m_initialized)
-		glfwTerminate();
 
 	return OK;
 }
@@ -89,7 +77,7 @@ IEventManager::EM_Err InputManager::Register(IListener * listener, TEvent e, int
 		return KO;
 
 
-	m_listeners[e][priority].push_back(listener);
+	mListeners[e][priority].push_back(listener);
 
 	return OK;
 }
@@ -99,16 +87,16 @@ IEventManager::EM_Err InputManager::Unregister(IListener *, TEvent e = TEvent::E
 	return OK;
 }
 
-void InputManager::MouseMove(Window* window, double xpos, double ypos) {
+void InputManager::MouseMove(double xpos, double ypos) {
 
 	//glfwGetMouseButton
 }
 
-void InputManager::MouseClick(Window* window, int button, int action, int mods) {
+void InputManager::MouseClick(int button, int action, int mods) {
 	
 	//glfwGetmouse
 }
 
-void InputManager::KeyPressed(Window* window, int key, int scancode, int action, int mods) {
+void InputManager::KeyPressed(int key, int scancode, int action, int mods) {
 	
 }

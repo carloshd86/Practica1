@@ -14,5 +14,5 @@ public:
 	void SetPriority(int priority);
 
 private:
-	int m_priority;
+	int mPriority;
 };

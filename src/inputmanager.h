@@ -1,10 +1,9 @@
 #pragma once
 
 #include "eventmanager.h"
-#include "windowmanager.h"
 #include <map>
 #include <vector>
-
+#include "windowmanager.h"
 
 class InputManager : public IEventManager {
 	
@@ -21,16 +20,17 @@ public:
 	EM_Err Register     (IListener * listener, TEvent e, int priority);
 	EM_Err Unregister   (IListener * listener, TEvent e = TEvent::EAll);
 
-	void MouseMove (IWindowManager::Window * window, double xpos, double ypos);
-	void MouseClick(IWindowManager::Window * window, int button, int action, int mods);
-	void KeyPressed(IWindowManager::Window * window, int key, int scancode, int action, int mods);
+	void MouseMove (double xpos, double ypos);
+	void MouseClick(int button, int action, int mods);
+	void KeyPressed(int key, int scancode, int action, int mods);
 
 private:
 	InputManager();
 
-	static InputManager *m_instance;
+	static InputManager *mInstance;
 
-	ListenerMap m_listeners;
-	const void *m_window;
-	bool        m_initialized;
+	ListenerMap     mListeners;
+	Window         *m_pWindow;
+	IWindowManager *m_pWindowManager;
+	bool            mInitialized;
 };

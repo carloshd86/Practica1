@@ -4,20 +4,20 @@
 
 class CEvent {
 public:
-	CEvent(IEventManager::TEvent type) : m_type(type) {}
+	CEvent(IEventManager::TEvent type) : mType(type) {}
 
-	IEventManager::TEvent GetType() const { return m_type; }
+	IEventManager::TEvent GetType() const { return mType; }
 
 private:
-	IEventManager::TEvent m_type;
+	IEventManager::TEvent mType;
 };
 
 class CEventMouse : public CEvent {
 public:
-	int GetX() const { return m_x; }
-	int GetY() const { return m_y; }
+	int GetPosX() const { return mPosX; }
+	int GetPosY() const { return mPosY; }
 
 private:
-	int m_x;
-	int m_y;
+	int mPosX;
+	int mPosY;
 };
