@@ -4,7 +4,7 @@
 
 
 #include "glfwwindowmanager.h"
-#include "inputmanager.h"
+#include "eventmanager.h"
 #include "ugine.h"
 #include "globals.h"
 #include <iostream>

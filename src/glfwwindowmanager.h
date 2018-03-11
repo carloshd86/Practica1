@@ -21,9 +21,9 @@ public:
 	virtual void          SwapBuffers       ();
 	virtual void          PollEvents        ();
 	
-	virtual void SetMouseMoveCallback  (WindowMouseMoveFun fun);
-	virtual void SetMouseClickCallback (WindowMouseClickFun fun);
-	virtual void SetKeyPressedCallback (WindowKeyFun fun);
+	virtual void SetMouseMoveCallback  (std::function<WindowMouseMoveFun> fun);
+	virtual void SetMouseClickCallback (std::function<WindowMouseClickFun> fun);
+	virtual void SetKeyPressedCallback (std::function<WindowKeyFun> fun);
 
 private:
 	GlfwWindowManager();

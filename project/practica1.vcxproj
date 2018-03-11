@@ -20,10 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\lib\pugixml.cpp" />
+    <ClCompile Include="..\src\application.cpp" />
     <ClCompile Include="..\src\entityplayer.cpp" />
     <ClCompile Include="..\src\font.cpp" />
     <ClCompile Include="..\src\glfwwindowmanager.cpp" />
-    <ClCompile Include="..\src\inputmanager.cpp" />
+    <ClCompile Include="..\src\glfwinputmanager.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\sprite.cpp" />
     <ClCompile Include="..\src\ugine.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="..\lib\litegfx.h" />
     <ClInclude Include="..\lib\stb_image.h" />
     <ClInclude Include="..\lib\stb_truetype.h" />
+    <ClInclude Include="..\src\application.h" />
     <ClInclude Include="..\src\asserts.h" />
     <ClInclude Include="..\src\collider.h" />
     <ClInclude Include="..\src\collision_funcs.h" />
@@ -43,7 +45,7 @@
     <ClInclude Include="..\src\font.h" />
     <ClInclude Include="..\src\glfwwindowmanager.h" />
     <ClInclude Include="..\src\globals.h" />
-    <ClInclude Include="..\src\inputmanager.h" />
+    <ClInclude Include="..\src\glfwinputmanager.h" />
     <ClInclude Include="..\src\memorycontrol.h" />
     <ClInclude Include="..\src\sprite.h" />
     <ClInclude Include="..\src\stringutils.h" />

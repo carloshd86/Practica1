@@ -1,6 +1,7 @@
 #include "glfwwindowmanager.h"
 #include "globals.h"
 #include <glfw3.h>
+#include "asserts.h"
 
 #define LITE_GFX_IMPLEMENTATION
 #include <litegfx.h>
@@ -17,7 +18,7 @@ GlfwWindowManager::GlfwWindowManager() :
 //Destructor
 
 GlfwWindowManager::~GlfwWindowManager() {
-	if (mInitalized)
+	if (mInitialized)
 		End();
 }
 
@@ -90,18 +91,20 @@ void  GlfwWindowManager::PollEvents() {
 	glfwPollEvents();
 }
 
-void GlfwWindowManager::SetMouseMoveCallback(WindowMouseMoveFun fun) {
-	GLFWcursorposfun glfwFun = [](double xpos, double ypos)
-	{
-		MouseMove(xpos, ypos);
-	};
-	glfwSetCursorPosCallback(mGlfwWindow, reinterpret_cast<GLFWcursorposfun>(fun));
+void GlfwWindowManager::SetMouseMoveCallback(std::function<WindowMouseMoveFun> fun) {
+	GLFWcursorposfun * glfwFun = fun.target<GLFWcursorposfun>();
+	ASSERT(glfwFun);
+	glfwSetCursorPosCallback(mGlfwWindow, *glfwFun);
 }
 
-void GlfwWindowManager::SetMouseClickCallback(WindowMouseClickFun fun) {
-	glfwSetMouseButtonCallback(mGlfwWindow, reinterpret_cast<GLFWmousebuttonfun>(fun));
+void GlfwWindowManager::SetMouseClickCallback(std::function<WindowMouseClickFun> fun) {
+	GLFWmousebuttonfun * glfwFun = fun.target<GLFWmousebuttonfun>();
+	ASSERT(glfwFun);
+	glfwSetMouseButtonCallback(mGlfwWindow, *glfwFun);
 }
 
-void GlfwWindowManager::SetKeyPressedCallback(WindowKeyFun fun) {
-	glfwSetKeyCallback(mGlfwWindow, reinterpret_cast<GLFWkeyfun>(fun));
+void GlfwWindowManager::SetKeyPressedCallback(std::function<WindowKeyFun> fun) {
+	GLFWkeyfun * glfwFun = fun.target<GLFWkeyfun>();
+	ASSERT(glfwFun);
+	glfwSetKeyCallback(mGlfwWindow, *glfwFun);
 }
