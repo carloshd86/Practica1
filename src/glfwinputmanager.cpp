@@ -2,21 +2,30 @@
 #include "globals.h"
 #include "glfwwindowmanager.h"
 #include "asserts.h"
+#include <algorithm>
 
-// Constructors
+
+GlfwInputManager * GlfwInputManager::mInstance;
+
+// *************************************************
+//
+// *************************************************
 
 GlfwInputManager::GlfwInputManager() :
 	mInitialized (false) {}
 
-
-//Destructor
+// *************************************************
+//
+// *************************************************
 
 GlfwInputManager::~GlfwInputManager() {
 	if (mInitialized)
 		End();
 }
 
-// Public
+// *************************************************
+//
+// *************************************************
 
 GlfwInputManager * GlfwInputManager::Instance() {
 	if (!mInstance) {
@@ -26,6 +35,10 @@ GlfwInputManager * GlfwInputManager::Instance() {
 
 	return mInstance;
 }
+
+// *************************************************
+//
+// *************************************************
 
 IEventManager::EM_Err GlfwInputManager::Init() {
 
@@ -51,26 +64,68 @@ IEventManager::EM_Err GlfwInputManager::Init() {
 	return OK;
 }
 
+// *************************************************
+//
+// *************************************************
+
 IEventManager::EM_Err GlfwInputManager::End() {
 
 	return OK;
 }
+
+// *************************************************
+//
+// *************************************************
 
 IEventManager::EM_Err GlfwInputManager::Register(IListener * listener, TEvent e, int priority) {
 
 	if (EAll == e)
 		return KO;
 
-
 	mListeners[e][priority].push_back(listener);
 
 	return OK;
 }
 
-IEventManager::EM_Err GlfwInputManager::Unregister(IListener *, TEvent e = TEvent::EAll) {
+// *************************************************
+//
+// *************************************************
+
+IEventManager::EM_Err GlfwInputManager::Unregister(IListener * listener, TEvent e) {
+
+	if (TEvent::EAll == e) {
+		for (auto it = mListeners.begin(); it != mListeners.end(); ++it) {
+			TEvent event = it->first;
+			RemoveListenerMapListenerForEvent(listener, event);
+		}
+	}
+	else {
+		RemoveListenerMapListenerForEvent(listener, e);
+	}
 
 	return OK;
 }
+
+// *************************************************
+//
+// *************************************************
+
+void GlfwInputManager::RemoveListenerMapListenerForEvent(IListener * listener, TEvent e) {
+	for(auto prioritiesIt = mListeners[e].begin(); prioritiesIt != mListeners[e].end(); ++prioritiesIt) {
+		std::vector<IListener *> listeners = prioritiesIt->second;
+		auto listenersIt = listeners.begin();
+		while (listenersIt != listeners.end()) {
+			if (listener == *listenersIt) {
+				listenersIt = listeners.erase(listenersIt);
+			} else
+				++listenersIt;
+		}
+	}
+}
+
+// *************************************************
+//
+// *************************************************
 
 void GlfwInputManager::MouseMove(double xpos, double ypos) {
 
@@ -78,12 +133,20 @@ void GlfwInputManager::MouseMove(double xpos, double ypos) {
 	mMouseYPos = static_cast<float>(ypos);
 }
 
+// *************************************************
+//
+// *************************************************
+
 void GlfwInputManager::MouseClick(int button, int action, int mods) {
 	
 	mMouseButton = button;
 	mMouseAction = action;
 	mMouseMods   = mods;
 }
+
+// *************************************************
+//
+// *************************************************
 
 void GlfwInputManager::KeyPressed(int key, int scancode, int action, int mods) {
 

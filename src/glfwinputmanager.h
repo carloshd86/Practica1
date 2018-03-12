@@ -45,4 +45,6 @@ private:
 	int mKeyScanCode;
 	int mKeyAction;
 	int mKeyMods;
+
+	void RemoveListenerMapListenerForEvent(IListener * listener, TEvent e);
 };

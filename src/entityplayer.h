@@ -6,7 +6,7 @@
 class EntityPlayer: public CEntity, public IEventManager::IListener {
 public:
 	EntityPlayer(int priority = 0);
-	int Init();
+	bool Init();
 
 	virtual bool ProcessEvent(const CEvent &event);
 

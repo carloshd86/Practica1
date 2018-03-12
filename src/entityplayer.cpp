@@ -1,21 +1,29 @@
 #include "entityplayer.h"
-#include "inputmanager.h"
+#include "application.h"
 #include "asserts.h"
 #include "events.h"
 
-// Constructors
 
 EntityPlayer::EntityPlayer(int priority) : mPriority(priority) {}
 
+// *************************************************
+//
+// *************************************************
 
-// Public
-
-int EntityPlayer::Init() { 
-	InputManager * pInputManager = InputManager::Instance();
+bool EntityPlayer::Init() { 
+	Application    * pApplication   = Application::Instance();
+	ASSERT(pApplication);
+	IEventManager  * pInputManager  = pApplication->GetEventManager();
 	ASSERT(pInputManager);
 	pInputManager ->Register(this, IEventManager::TEvent::ELeftClick , mPriority); 
 	pInputManager ->Register(this, IEventManager::TEvent::EKeyPressed, mPriority); 
+
+	return true;
 }
+
+// *************************************************
+//
+// *************************************************
 
 bool EntityPlayer::ProcessEvent(const CEvent &event) {
 	switch (event.GetType()) {
@@ -35,5 +43,14 @@ bool EntityPlayer::ProcessEvent(const CEvent &event) {
 	return true;
 }
 
+// *************************************************
+//
+// *************************************************
+
 int  EntityPlayer::GetPriority() const       { return mPriority; }
+
+// *************************************************
+//
+// *************************************************
+
 void EntityPlayer::SetPriority(int priority) { mPriority = priority; }

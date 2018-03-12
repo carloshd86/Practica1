@@ -9,20 +9,31 @@
 #define mGlfwWindow static_cast<GLFWwindow * >(mWindow.pWindow)
 
 
-// Constructors
+// *************************************************
+//
+// *************************************************
+
+GlfwWindowManager * GlfwWindowManager::mInstance;
+
+// *************************************************
+//
+// *************************************************
 
 GlfwWindowManager::GlfwWindowManager() :
 	mInitialized (false) {}
 
-
-//Destructor
+// *************************************************
+//
+// *************************************************
 
 GlfwWindowManager::~GlfwWindowManager() {
 	if (mInitialized)
 		End();
 }
 
-// Public
+// *************************************************
+//
+// *************************************************
 
 GlfwWindowManager * GlfwWindowManager::Instance() {
 	if (!mInstance) {
@@ -33,6 +44,9 @@ GlfwWindowManager * GlfwWindowManager::Instance() {
 	return mInstance;
 }
 
+// *************************************************
+//
+// *************************************************
 
 IWindowManager::WM_Err GlfwWindowManager::Init() {
 
@@ -56,40 +70,84 @@ IWindowManager::WM_Err GlfwWindowManager::Init() {
 	return OK;
 }
 
+// *************************************************
+//
+// *************************************************
+
 IWindowManager::WM_Err GlfwWindowManager::End() {
 	if (mInitialized)
 		glfwTerminate();
 	return OK;
 }
 
+// *************************************************
+//
+// *************************************************
+
 double GlfwWindowManager::GetTime() const {
 	return glfwGetTime();
 }
+
+// *************************************************
+//
+// *************************************************
 
 bool  GlfwWindowManager::WindowShouldClose() {
 
 	return glfwWindowShouldClose(mGlfwWindow);
 }
 
+// *************************************************
+//
+// *************************************************
+
 void  GlfwWindowManager::GetWindowSize(int& screenWidth, int& screenHeight) {
 	glfwGetWindowSize(mGlfwWindow, &screenWidth, &screenHeight);
 }
+
+// *************************************************
+//
+// *************************************************
 
 void  GlfwWindowManager::SetViewport(int x, int y, int width, int height) {
 	lgfx_setviewport(x, y, width, height);
 }
 
+// *************************************************
+//
+// *************************************************
+
 void  GlfwWindowManager::SetResolution(int width, int height) {
 	lgfx_setresolution(width, height);
 }
+
+// *************************************************
+//
+// *************************************************
+
+void  GlfwWindowManager::SetColor(float r, float g, float b, float a) {
+	lgfx_setcolor(r, g, b, a);
+}
+
+// *************************************************
+//
+// *************************************************
 
 void  GlfwWindowManager::SwapBuffers() {
 	glfwSwapBuffers(mGlfwWindow);	
 }
 
+// *************************************************
+//
+// *************************************************
+
 void  GlfwWindowManager::PollEvents() {
 	glfwPollEvents();
 }
+
+// *************************************************
+//
+// *************************************************
 
 void GlfwWindowManager::SetMouseMoveCallback(std::function<WindowMouseMoveFun> fun) {
 	GLFWcursorposfun * glfwFun = fun.target<GLFWcursorposfun>();
@@ -97,11 +155,19 @@ void GlfwWindowManager::SetMouseMoveCallback(std::function<WindowMouseMoveFun> f
 	glfwSetCursorPosCallback(mGlfwWindow, *glfwFun);
 }
 
+// *************************************************
+//
+// *************************************************
+
 void GlfwWindowManager::SetMouseClickCallback(std::function<WindowMouseClickFun> fun) {
 	GLFWmousebuttonfun * glfwFun = fun.target<GLFWmousebuttonfun>();
 	ASSERT(glfwFun);
 	glfwSetMouseButtonCallback(mGlfwWindow, *glfwFun);
 }
+
+// *************************************************
+//
+// *************************************************
 
 void GlfwWindowManager::SetKeyPressedCallback(std::function<WindowKeyFun> fun) {
 	GLFWkeyfun * glfwFun = fun.target<GLFWkeyfun>();

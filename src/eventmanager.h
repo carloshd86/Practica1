@@ -21,7 +21,9 @@ public:
 	};
 
 	class IListener {
+
 	public:
+
 		virtual bool ProcessEvent(const CEvent &event) = 0;
 	};
 

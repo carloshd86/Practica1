@@ -18,6 +18,7 @@ public:
 	virtual void          GetWindowSize     (int& screenWidth, int& screenHeight);
 	virtual void          SetViewport       (int x, int y, int width, int height);
 	virtual void          SetResolution     (int width, int height);
+	virtual void          SetColor          (float r, float g, float b, float a);
 	virtual void          SwapBuffers       ();
 	virtual void          PollEvents        ();
 	

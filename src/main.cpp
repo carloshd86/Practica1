@@ -3,10 +3,10 @@
 #endif
 
 
-#include "glfwwindowmanager.h"
-#include "eventmanager.h"
-#include "ugine.h"
+#include "application.h"
 #include "globals.h"
+#include "vec2.h"
+#include "asserts.h"
 #include <iostream>
 #include <vector>
 
@@ -15,23 +15,27 @@ using namespace std;
 
 int main() {
 
-	GlfwWindowManager * pWindowManager = GlfwWindowManager::Instance();
+	Application * pApplication = Application::Instance();
+	ASSERT(pApplication);
+
+	IWindowManager * pWindowManager = pApplication->GetWindowManager();
+	ASSERT(pWindowManager);
+	IEventManager  * pInputManager  = pApplication->GetEventManager();
+	ASSERT(pInputManager);
 
 	// Bucle principal
 	double lastTime = pWindowManager->GetTime();
-	Vec2 screenSize;
+	int screenWidth, screenHeight;
 
-	while (!pWindowManager->WindowShouldClose() && !glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+	while (!pWindowManager->WindowShouldClose()) {
 		// Actualizamos delta
-		float deltaTime = static_cast<float>(glfwGetTime() - lastTime);
-		lastTime = glfwGetTime();
+		float deltaTime = static_cast<float>(pWindowManager->GetTime() - lastTime);
+		lastTime = pWindowManager->GetTime();
 
 		// Actualizamos tamaño de ventana
-		glfwGetWindowSize(window, &screenWidth, &screenHeight);
-		lgfx_setviewport(0, 0, screenWidth, screenHeight);
-		lgfx_setresolution(SCREEN_WIDTH_RESOLUTION, SCREEN_HEIGHT_RESOLUTION);
-		screenSize.x = static_cast<float>(SCREEN_WIDTH_RESOLUTION);
-		screenSize.y = static_cast<float>(SCREEN_HEIGHT_RESOLUTION);
+		pWindowManager->GetWindowSize(screenWidth, screenHeight);
+		pWindowManager->SetViewport(0, 0, screenWidth, screenHeight);
+		pWindowManager->SetResolution(GlobalConstants::SCREEN_WIDTH, GlobalConstants::SCREEN_HEIGHT);
 
 		/********************************/
 
@@ -41,14 +45,13 @@ int main() {
 		/********************************/
 
 		// Pintado
-
-		lgfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+		pWindowManager->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	
 		/********************************/
 
 		// Actualizamos ventana y eventos
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		pWindowManager->SwapBuffers();
+		//pWindowManager->PollEvents();
 	}
 
 
