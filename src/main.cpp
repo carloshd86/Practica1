@@ -3,57 +3,66 @@
 #endif
 
 
-#include "inputmanager.h"
-#include "ugine.h"
+#include "application.h"
 #include "globals.h"
+#include "vec2.h"
+#include "asserts.h"
 #include <iostream>
 #include <vector>
+#include "entityplayer.h"
+#include <Windows.h>
 
 
 using namespace std;
 
 int main() {
-	// Inicializamos GLFW
-	if (!glfwInit()) {
-		cout << "Error: No se ha podido inicializar GLFW" << endl;
-		return -1;
-	}
-	atexit(glfwTerminate);
+
+	Application * pApplication = Application::Instance();
+	ASSERT(pApplication);
+
+	IWindowManager * pWindowManager = pApplication->GetWindowManager();
+	ASSERT(pWindowManager);
+	IEventManager  * pInputManager  = pApplication->GetEventManager();
+	ASSERT(pInputManager);
+
+	EntityPlayer * pPlayer = new EntityPlayer();
+	pPlayer->Init();
 
 	// Bucle principal
-	double lastTime = glfwGetTime();
-	Vec2 screenSize;
+	double lastTime = pWindowManager->GetTime();
+	int screenWidth, screenHeight;
 
-	while (!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+	float x = 0.f;;
+
+	while (!pWindowManager->WindowShouldClose()) {
 		// Actualizamos delta
-		float deltaTime = static_cast<float>(glfwGetTime() - lastTime);
-		lastTime = glfwGetTime();
+		float deltaTime = static_cast<float>(pWindowManager->GetTime() - lastTime);
+		lastTime = pWindowManager->GetTime();
 
 		// Actualizamos tamaño de ventana
-		glfwGetWindowSize(window, &screenWidth, &screenHeight);
-		lgfx_setviewport(0, 0, screenWidth, screenHeight);
-		lgfx_setresolution(SCREEN_WIDTH_RESOLUTION, SCREEN_HEIGHT_RESOLUTION);
-		screenSize.x = static_cast<float>(SCREEN_WIDTH_RESOLUTION);
-		screenSize.y = static_cast<float>(SCREEN_HEIGHT_RESOLUTION);
+		pWindowManager->GetWindowSize(screenWidth, screenHeight);
+		pWindowManager->SetViewport(0, 0, screenWidth, screenHeight);
+		pWindowManager->SetResolution(GlobalConstants::SCREEN_WIDTH, GlobalConstants::SCREEN_HEIGHT);
 
 		/********************************/
 
 		// Actualizacion de logica del programa
-		
+		pPlayer->Update(deltaTime);
 
 		/********************************/
 
 		// Pintado
-
-		lgfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+		pWindowManager->ClearColorBuffer(0,0,0);
+		pPlayer->Render();
 	
 		/********************************/
 
 		// Actualizamos ventana y eventos
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		pWindowManager->SwapBuffers();
+		pWindowManager->WaitEvents();
 	}
 
+	delete pPlayer;
 
 	return 0;
 }

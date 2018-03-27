@@ -1,7 +1,5 @@
 #include "ugine.h"
 
-
-#define LITE_GFX_IMPLEMENTATION
 #include <litegfx.h>
 
 #define STB_IMAGE_IMPLEMENTATION

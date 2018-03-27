@@ -3,21 +3,74 @@
 #include "eventmanager.h"
 
 class CEvent {
-public:
-	CEvent(IEventManager::TEvent type) : m_type(type) {}
 
-	IEventManager::TEvent GetType() const { return m_type; }
+public:
+	CEvent(IEventManager::TEvent type) : mType(type) {}
+	virtual ~CEvent() {}
+
+	IEventManager::TEvent GetType() const { return mType; }
 
 private:
-	IEventManager::TEvent m_type;
+	IEventManager::TEvent mType;
 };
 
-class CEventMouse : public CEvent {
+// *************************************************
+//
+// *************************************************
+
+class CEventKeyPressed : public CEvent {
+
 public:
-	int GetX() const { return m_x; }
-	int GetY() const { return m_y; }
+	CEventKeyPressed(int key) :
+		CEvent(IEventManager::TEvent::EKeyPressed),
+		mKey(key) {}
+
+	int GetKey() const { return mKey; }
 
 private:
-	int m_x;
-	int m_y;
+	int mKey;
+};
+
+// *************************************************
+//
+// *************************************************
+
+class CEventMouseClick : public CEvent {
+
+public:
+	enum EMouseButton {
+		Left,
+		Right,
+		Middle,
+		NotSupported
+	};
+
+	CEventMouseClick(EMouseButton mouseButton) :
+		CEvent(IEventManager::TEvent::EMouseClick),
+		mMouseButton(mouseButton) {}
+
+	EMouseButton GetMouseButton() const { return mMouseButton; }
+
+private:
+	EMouseButton mMouseButton;
+};
+
+// *************************************************
+//
+// *************************************************
+
+class CEventMouseMove : public CEvent {
+
+public:
+	CEventMouseMove(float posX, float posY) :
+		CEvent(IEventManager::TEvent::EMouseMove),
+		mPosX(posX),
+		mPosY(posY) {}
+
+	float GetPosX() const { return mPosX; }
+	float GetPosY() const { return mPosY; }
+
+private:
+	float mPosX;
+	float mPosY;
 };
