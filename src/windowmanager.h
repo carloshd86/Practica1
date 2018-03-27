@@ -3,7 +3,6 @@
 
 #include <functional>
 
-
 class IWindowManager {
 
 public:
@@ -18,9 +17,9 @@ public:
 		void * pWindow;
 	};
 
-	typedef void (WindowMouseMoveFun)(double,double);
-	typedef void (WindowMouseClickFun)(int,int,int);
-	typedef void (WindowKeyFun)(int,int,int,int);
+	typedef void (* WindowMouseMoveFun)(void*,double,double);
+	typedef void (* WindowMouseClickFun)(void*,int,int,int);
+	typedef void (* WindowKeyFun)(void*,int,int,int,int);
 
 	virtual WM_Err Init ()  = 0;
 	virtual WM_Err End  () = 0;
@@ -33,10 +32,14 @@ public:
 	virtual void          SetColor                 (float r, float g, float b, float a)                  = 0;
 	virtual void          SwapBuffers              ()                                                    = 0;
 	virtual void          PollEvents               ()                                                    = 0;
+	virtual void          WaitEvents               ()                                                    = 0;
+	virtual void          DrawRect                 (float x, float y, float width, float height)         = 0;
+	virtual void          ClearColorBuffer         (float r, float g, float b)                           = 0;
 
-	virtual void SetMouseMoveCallback  (std::function<WindowMouseMoveFun> fun)  = 0;
-	virtual void SetMouseClickCallback (std::function<WindowMouseClickFun> fun) = 0;
-	virtual void SetKeyPressedCallback (std::function<WindowKeyFun> fun)        = 0;
+
+	virtual void SetMouseMoveCallback  (WindowMouseMoveFun fun)  = 0;
+	virtual void SetMouseClickCallback (WindowMouseClickFun fun) = 0;
+	virtual void SetKeyPressedCallback (WindowKeyFun fun)        = 0;
 
 };
 

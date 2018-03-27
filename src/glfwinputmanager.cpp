@@ -3,6 +3,10 @@
 #include "glfwwindowmanager.h"
 #include "asserts.h"
 #include <algorithm>
+#include "events.h"
+
+
+GlfwInputManager::ListenerMap  GlfwInputManager::mListeners;
 
 
 GlfwInputManager * GlfwInputManager::mInstance;
@@ -51,13 +55,13 @@ IEventManager::EM_Err GlfwInputManager::Init() {
 
 	// Setting events
 	// Mouse Move
-	m_pWindowManager->SetMouseMoveCallback(std::bind(&GlfwInputManager::MouseMove, this, std::placeholders::_1, std::placeholders::_2));
+	m_pWindowManager->SetMouseMoveCallback(&GlfwInputManager::MouseMove);
 
 	// Mouse Click
-	m_pWindowManager->SetMouseClickCallback(std::bind(&GlfwInputManager::MouseClick, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	m_pWindowManager->SetMouseClickCallback(&GlfwInputManager::MouseClick);
 	
 	// Key Pressed
-	m_pWindowManager->SetKeyPressedCallback(std::bind(&GlfwInputManager::KeyPressed, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+	m_pWindowManager->SetKeyPressedCallback(&GlfwInputManager::KeyPressed);
 
 
 	mInitialized = true;
@@ -127,31 +131,53 @@ void GlfwInputManager::RemoveListenerMapListenerForEvent(IListener * listener, T
 //
 // *************************************************
 
-void GlfwInputManager::MouseMove(double xpos, double ypos) {
-
-	mMouseXPos = static_cast<float>(xpos);
-	mMouseYPos = static_cast<float>(ypos);
+void GlfwInputManager::MouseMove(void * window, double xpos, double ypos) {
+	if (mListeners[TEvent::EMouseMove].size()) {
+		for (auto prioritiesIt = mListeners[TEvent::EMouseMove].begin(); prioritiesIt != mListeners[TEvent::EMouseMove].end(); ++prioritiesIt) {
+			std::vector<IListener *> listeners = prioritiesIt->second;
+			auto listenersIt = listeners.begin();
+			for (auto listenersIt = listeners.begin(); listenersIt !=listeners.end(); ++listenersIt) {
+				(*listenersIt)->ProcessEvent(CEventMouseMove(static_cast<float>(xpos), static_cast<float>(ypos)));
+			}
+		}
+	}
 }
 
 // *************************************************
 //
 // *************************************************
 
-void GlfwInputManager::MouseClick(int button, int action, int mods) {
-	
-	mMouseButton = button;
-	mMouseAction = action;
-	mMouseMods   = mods;
+void GlfwInputManager::MouseClick(void * window, int button, int action, int mods) {
+	CEventMouseClick::EMouseButton mouseButton = CEventMouseClick::EMouseButton::NotSupported;
+	switch (button) {
+		case GLFW_MOUSE_BUTTON_LEFT: mouseButton = CEventMouseClick::EMouseButton::Left;   break;
+		case GLFW_MOUSE_BUTTON_MIDDLE: mouseButton = CEventMouseClick::EMouseButton::Middle; break;
+		case GLFW_MOUSE_BUTTON_RIGHT: mouseButton = CEventMouseClick::EMouseButton::Right;  break;
+	}
+
+	if (mListeners[TEvent::EMouseClick].size()) {
+		for (auto prioritiesIt = mListeners[TEvent::EMouseClick].begin(); prioritiesIt != mListeners[TEvent::EMouseClick].end(); ++prioritiesIt) {
+			std::vector<IListener *> listeners = prioritiesIt->second;
+			auto listenersIt = listeners.begin();
+			for (auto listenersIt = listeners.begin(); listenersIt != listeners.end(); ++listenersIt) {
+				(*listenersIt)->ProcessEvent(CEventMouseClick(mouseButton));
+			}
+		}
+	}
 }
 
 // *************************************************
 //
 // *************************************************
 
-void GlfwInputManager::KeyPressed(int key, int scancode, int action, int mods) {
-
-	mKey         = key;
-	mKeyScanCode = scancode;
-	mKeyAction   = action;
-	mKeyMods     = mods;
+void GlfwInputManager::KeyPressed(void * window, int key, int scancode, int action, int mods) {
+	if (mListeners[TEvent::EKeyPressed].size()) {
+		for (auto prioritiesIt = mListeners[TEvent::EKeyPressed].begin(); prioritiesIt != mListeners[TEvent::EKeyPressed].end(); ++prioritiesIt) {
+			std::vector<IListener *> listeners = prioritiesIt->second;
+			auto listenersIt = listeners.begin();
+			for (auto listenersIt = listeners.begin(); listenersIt !=listeners.end(); ++listenersIt) {
+				(*listenersIt)->ProcessEvent(CEventKeyPressed(key));
+			}
+		}
+	}
 }

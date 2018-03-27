@@ -1,6 +1,7 @@
 #pragma once
 
 #include "windowmanager.h"
+#include <glfw3.h>
 
 
 class GlfwWindowManager : public IWindowManager {
@@ -21,10 +22,13 @@ public:
 	virtual void          SetColor          (float r, float g, float b, float a);
 	virtual void          SwapBuffers       ();
 	virtual void          PollEvents        ();
+	virtual void          WaitEvents        ();
+	virtual void          DrawRect          (float x, float y, float width, float height);
+	virtual void          ClearColorBuffer  (float r, float g, float b);
 	
-	virtual void SetMouseMoveCallback  (std::function<WindowMouseMoveFun> fun);
-	virtual void SetMouseClickCallback (std::function<WindowMouseClickFun> fun);
-	virtual void SetKeyPressedCallback (std::function<WindowKeyFun> fun);
+	virtual void SetMouseMoveCallback  (WindowMouseMoveFun fun);
+	virtual void SetMouseClickCallback (WindowMouseClickFun fun);
+	virtual void SetKeyPressedCallback (WindowKeyFun fun);
 
 private:
 	GlfwWindowManager();

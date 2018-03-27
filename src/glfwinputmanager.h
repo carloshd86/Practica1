@@ -20,31 +20,19 @@ public:
 	EM_Err Register     (IListener * listener, TEvent e, int priority);
 	EM_Err Unregister   (IListener * listener, TEvent e = TEvent::EAll);
 
-	void MouseMove (double xpos, double ypos);
-	void MouseClick(int button, int action, int mods);
-	void KeyPressed(int key, int scancode, int action, int mods);
+	static void MouseMove (void * window, double xpos, double ypos);
+	static void MouseClick(void * window, int button, int action, int mods);
+	static void KeyPressed(void * window, int key, int scancode, int action, int mods);
 
 private:
 	GlfwInputManager();
 
 	static GlfwInputManager *mInstance;
 
-	ListenerMap     mListeners;
-	Window         *m_pWindow;
-	IWindowManager *m_pWindowManager;
-	bool            mInitialized;
-
-	float mMouseXPos;
-	float mMouseYPos;
-
-	int mMouseButton;
-	int mMouseAction;
-	int mMouseMods;
-
-	int mKey;
-	int mKeyScanCode;
-	int mKeyAction;
-	int mKeyMods;
+	static ListenerMap  mListeners;
+	Window             *m_pWindow;
+	IWindowManager     *m_pWindowManager;
+	bool                mInitialized;
 
 	void RemoveListenerMapListenerForEvent(IListener * listener, TEvent e);
 };

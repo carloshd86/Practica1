@@ -9,6 +9,8 @@
 #include "asserts.h"
 #include <iostream>
 #include <vector>
+#include "entityplayer.h"
+#include <Windows.h>
 
 
 using namespace std;
@@ -23,9 +25,14 @@ int main() {
 	IEventManager  * pInputManager  = pApplication->GetEventManager();
 	ASSERT(pInputManager);
 
+	EntityPlayer * pPlayer = new EntityPlayer();
+	pPlayer->Init();
+
 	// Bucle principal
 	double lastTime = pWindowManager->GetTime();
 	int screenWidth, screenHeight;
+
+	float x = 0.f;;
 
 	while (!pWindowManager->WindowShouldClose()) {
 		// Actualizamos delta
@@ -40,20 +47,22 @@ int main() {
 		/********************************/
 
 		// Actualizacion de logica del programa
-		
+		pPlayer->Update(deltaTime);
 
 		/********************************/
 
 		// Pintado
-		pWindowManager->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+		pWindowManager->ClearColorBuffer(0,0,0);
+		pPlayer->Render();
 	
 		/********************************/
 
 		// Actualizamos ventana y eventos
 		pWindowManager->SwapBuffers();
-		//pWindowManager->PollEvents();
+		pWindowManager->WaitEvents();
 	}
 
+	delete pPlayer;
 
 	return 0;
 }

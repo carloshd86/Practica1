@@ -1,6 +1,5 @@
 #include "glfwwindowmanager.h"
 #include "globals.h"
-#include <glfw3.h>
 #include "asserts.h"
 
 #define LITE_GFX_IMPLEMENTATION
@@ -63,8 +62,10 @@ IWindowManager::WM_Err GlfwWindowManager::Init() {
 	// Activating OpenGL
 	glfwMakeContextCurrent(glfwWindow);
 
-	// Seting glfw window user pointer to this GlfwInputManager
-	glfwSetWindowUserPointer(glfwWindow, this);
+	// Initializing LiteGFX
+	lgfx_setup2d(GlobalConstants::SCREEN_WIDTH, GlobalConstants::SCREEN_HEIGHT);
+
+	mWindow.pWindow = glfwWindow;
 
 	mInitialized = true;
 	return OK;
@@ -149,28 +150,45 @@ void  GlfwWindowManager::PollEvents() {
 //
 // *************************************************
 
-void GlfwWindowManager::SetMouseMoveCallback(std::function<WindowMouseMoveFun> fun) {
-	GLFWcursorposfun * glfwFun = fun.target<GLFWcursorposfun>();
-	ASSERT(glfwFun);
-	glfwSetCursorPosCallback(mGlfwWindow, *glfwFun);
+void  GlfwWindowManager::WaitEvents() {
+	glfwWaitEvents();
 }
 
 // *************************************************
 //
 // *************************************************
 
-void GlfwWindowManager::SetMouseClickCallback(std::function<WindowMouseClickFun> fun) {
-	GLFWmousebuttonfun * glfwFun = fun.target<GLFWmousebuttonfun>();
-	ASSERT(glfwFun);
-	glfwSetMouseButtonCallback(mGlfwWindow, *glfwFun);
+void GlfwWindowManager::DrawRect(float x, float y, float width, float height) {
+	lgfx_drawrect(x, y, width, height);
+}
+
+// *************************************************
+//
+// *************************************************
+void GlfwWindowManager::ClearColorBuffer(float r, float g, float b) {
+	lgfx_clearcolorbuffer(r, g, b);
 }
 
 // *************************************************
 //
 // *************************************************
 
-void GlfwWindowManager::SetKeyPressedCallback(std::function<WindowKeyFun> fun) {
-	GLFWkeyfun * glfwFun = fun.target<GLFWkeyfun>();
-	ASSERT(glfwFun);
-	glfwSetKeyCallback(mGlfwWindow, *glfwFun);
+void GlfwWindowManager::SetMouseMoveCallback(WindowMouseMoveFun fun) {
+	glfwSetCursorPosCallback(mGlfwWindow, reinterpret_cast<GLFWcursorposfun>(fun));
+}
+
+// *************************************************
+//
+// *************************************************
+
+void GlfwWindowManager::SetMouseClickCallback(WindowMouseClickFun fun) {
+	glfwSetMouseButtonCallback(mGlfwWindow, reinterpret_cast<GLFWmousebuttonfun>(fun));
+}
+
+// *************************************************
+//
+// *************************************************
+
+void GlfwWindowManager::SetKeyPressedCallback(WindowKeyFun fun) {
+	glfwSetKeyCallback(mGlfwWindow, reinterpret_cast<GLFWkeyfun>(fun));
 }

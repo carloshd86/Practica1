@@ -13,10 +13,9 @@ public:
 	};
 
 	enum TEvent {
-		ELeftClick,
-		ERightClick,
-		EMiddleClick,
 		EKeyPressed,
+		EMouseClick,
+		EMouseMove,
 		EAll
 	};
 
@@ -30,8 +29,4 @@ public:
 
 	virtual EM_Err Register   (IListener * listener, TEvent e, int priority)  = 0;
 	virtual EM_Err Unregister (IListener * listener, TEvent e = TEvent::EAll) = 0;
-
-	virtual void MouseMove  (double xpos, double ypos)                    = 0;
-	virtual void MouseClick (int button, int action, int mods)            = 0;
-	virtual void KeyPressed (int key, int scancode, int action, int mods) = 0;
 };
