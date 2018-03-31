@@ -26,9 +26,9 @@ public:
 	virtual void          DrawRect          (float x, float y, float width, float height);
 	virtual void          ClearColorBuffer  (float r, float g, float b);
 	
-	virtual void SetMouseMoveCallback  (WindowMouseMoveFun fun);
-	virtual void SetMouseClickCallback (WindowMouseClickFun fun);
-	virtual void SetKeyPressedCallback (WindowKeyFun fun);
+	virtual void SetMouseMoveCallback  (GLFWcursorposfun fun);
+	virtual void SetMouseClickCallback (GLFWmousebuttonfun fun);
+	virtual void SetKeyPressedCallback (GLFWkeyfun fun);
 
 private:
 	GlfwWindowManager();

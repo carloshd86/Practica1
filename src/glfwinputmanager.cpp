@@ -6,9 +6,6 @@
 #include "events.h"
 
 
-GlfwInputManager::ListenerMap  GlfwInputManager::mListeners;
-
-
 GlfwInputManager * GlfwInputManager::mInstance;
 
 // *************************************************
@@ -114,6 +111,14 @@ IEventManager::EM_Err GlfwInputManager::Unregister(IListener * listener, TEvent 
 //
 // *************************************************
 
+GlfwInputManager::ListenerMap& GlfwInputManager::GetListenerMap() {
+	return mListeners;
+}
+
+// *************************************************
+//
+// *************************************************
+
 void GlfwInputManager::RemoveListenerMapListenerForEvent(IListener * listener, TEvent e) {
 	for(auto prioritiesIt = mListeners[e].begin(); prioritiesIt != mListeners[e].end(); ++prioritiesIt) {
 		std::vector<IListener *> listeners = prioritiesIt->second;
@@ -131,9 +136,11 @@ void GlfwInputManager::RemoveListenerMapListenerForEvent(IListener * listener, T
 //
 // *************************************************
 
-void GlfwInputManager::MouseMove(void * window, double xpos, double ypos) {
-	if (mListeners[TEvent::EMouseMove].size()) {
-		for (auto prioritiesIt = mListeners[TEvent::EMouseMove].begin(); prioritiesIt != mListeners[TEvent::EMouseMove].end(); ++prioritiesIt) {
+void GlfwInputManager::MouseMove(GLFWwindow * window, double xpos, double ypos) {
+	ListenerMap& listenerMap = mInstance->GetListenerMap();
+
+	if (listenerMap[TEvent::EMouseMove].size()) {
+		for (auto prioritiesIt = listenerMap[TEvent::EMouseMove].begin(); prioritiesIt != listenerMap[TEvent::EMouseMove].end(); ++prioritiesIt) {
 			std::vector<IListener *> listeners = prioritiesIt->second;
 			auto listenersIt = listeners.begin();
 			for (auto listenersIt = listeners.begin(); listenersIt !=listeners.end(); ++listenersIt) {
@@ -147,16 +154,18 @@ void GlfwInputManager::MouseMove(void * window, double xpos, double ypos) {
 //
 // *************************************************
 
-void GlfwInputManager::MouseClick(void * window, int button, int action, int mods) {
+void GlfwInputManager::MouseClick(GLFWwindow * window, int button, int action, int mods) {
+	ListenerMap& listenerMap = mInstance->GetListenerMap();
+
 	CEventMouseClick::EMouseButton mouseButton = CEventMouseClick::EMouseButton::NotSupported;
 	switch (button) {
-		case GLFW_MOUSE_BUTTON_LEFT: mouseButton = CEventMouseClick::EMouseButton::Left;   break;
+		case GLFW_MOUSE_BUTTON_LEFT:   mouseButton = CEventMouseClick::EMouseButton::Left;   break;
 		case GLFW_MOUSE_BUTTON_MIDDLE: mouseButton = CEventMouseClick::EMouseButton::Middle; break;
-		case GLFW_MOUSE_BUTTON_RIGHT: mouseButton = CEventMouseClick::EMouseButton::Right;  break;
+		case GLFW_MOUSE_BUTTON_RIGHT:  mouseButton = CEventMouseClick::EMouseButton::Right;  break;
 	}
 
-	if (mListeners[TEvent::EMouseClick].size()) {
-		for (auto prioritiesIt = mListeners[TEvent::EMouseClick].begin(); prioritiesIt != mListeners[TEvent::EMouseClick].end(); ++prioritiesIt) {
+	if (listenerMap[TEvent::EMouseClick].size()) {
+		for (auto prioritiesIt = listenerMap[TEvent::EMouseClick].begin(); prioritiesIt != listenerMap[TEvent::EMouseClick].end(); ++prioritiesIt) {
 			std::vector<IListener *> listeners = prioritiesIt->second;
 			auto listenersIt = listeners.begin();
 			for (auto listenersIt = listeners.begin(); listenersIt != listeners.end(); ++listenersIt) {
@@ -170,9 +179,11 @@ void GlfwInputManager::MouseClick(void * window, int button, int action, int mod
 //
 // *************************************************
 
-void GlfwInputManager::KeyPressed(void * window, int key, int scancode, int action, int mods) {
-	if (mListeners[TEvent::EKeyPressed].size()) {
-		for (auto prioritiesIt = mListeners[TEvent::EKeyPressed].begin(); prioritiesIt != mListeners[TEvent::EKeyPressed].end(); ++prioritiesIt) {
+void GlfwInputManager::KeyPressed(GLFWwindow * window, int key, int scancode, int action, int mods) {
+	ListenerMap& listenerMap = mInstance->GetListenerMap();
+	
+	if (listenerMap[TEvent::EKeyPressed].size()) {
+		for (auto prioritiesIt = listenerMap[TEvent::EKeyPressed].begin(); prioritiesIt != listenerMap[TEvent::EKeyPressed].end(); ++prioritiesIt) {
 			std::vector<IListener *> listeners = prioritiesIt->second;
 			auto listenersIt = listeners.begin();
 			for (auto listenersIt = listeners.begin(); listenersIt !=listeners.end(); ++listenersIt) {

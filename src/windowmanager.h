@@ -17,10 +17,6 @@ public:
 		void * pWindow;
 	};
 
-	typedef void (* WindowMouseMoveFun)(void*,double,double);
-	typedef void (* WindowMouseClickFun)(void*,int,int,int);
-	typedef void (* WindowKeyFun)(void*,int,int,int,int);
-
 	virtual WM_Err Init ()  = 0;
 	virtual WM_Err End  () = 0;
 
@@ -35,11 +31,6 @@ public:
 	virtual void          WaitEvents               ()                                                    = 0;
 	virtual void          DrawRect                 (float x, float y, float width, float height)         = 0;
 	virtual void          ClearColorBuffer         (float r, float g, float b)                           = 0;
-
-
-	virtual void SetMouseMoveCallback  (WindowMouseMoveFun fun)  = 0;
-	virtual void SetMouseClickCallback (WindowMouseClickFun fun) = 0;
-	virtual void SetKeyPressedCallback (WindowKeyFun fun)        = 0;
 
 };
 

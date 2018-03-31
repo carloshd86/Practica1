@@ -173,22 +173,22 @@ void GlfwWindowManager::ClearColorBuffer(float r, float g, float b) {
 //
 // *************************************************
 
-void GlfwWindowManager::SetMouseMoveCallback(WindowMouseMoveFun fun) {
-	glfwSetCursorPosCallback(mGlfwWindow, reinterpret_cast<GLFWcursorposfun>(fun));
+void GlfwWindowManager::SetMouseMoveCallback(GLFWcursorposfun fun) {
+	glfwSetCursorPosCallback(mGlfwWindow, fun);
 }
 
 // *************************************************
 //
 // *************************************************
 
-void GlfwWindowManager::SetMouseClickCallback(WindowMouseClickFun fun) {
-	glfwSetMouseButtonCallback(mGlfwWindow, reinterpret_cast<GLFWmousebuttonfun>(fun));
+void GlfwWindowManager::SetMouseClickCallback(GLFWmousebuttonfun fun) {
+	glfwSetMouseButtonCallback(mGlfwWindow, fun);
 }
 
 // *************************************************
 //
 // *************************************************
 
-void GlfwWindowManager::SetKeyPressedCallback(WindowKeyFun fun) {
-	glfwSetKeyCallback(mGlfwWindow, reinterpret_cast<GLFWkeyfun>(fun));
+void GlfwWindowManager::SetKeyPressedCallback(GLFWkeyfun fun) {
+	glfwSetKeyCallback(mGlfwWindow, fun);
 }
