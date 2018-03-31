@@ -3,6 +3,7 @@
 #include "glfwwindowmanager.h"
 #include "asserts.h"
 #include <algorithm>
+#include <utility>
 #include "events.h"
 
 
@@ -83,7 +84,7 @@ IEventManager::EM_Err GlfwInputManager::Register(IListener * listener, TEvent e,
 	if (EAll == e)
 		return KO;
 
-	mListeners[e][priority].push_back(listener);
+	mListeners[e].insert(std::pair<int, IListener *>(priority, listener));
 
 	return OK;
 }
@@ -97,11 +98,11 @@ IEventManager::EM_Err GlfwInputManager::Unregister(IListener * listener, TEvent 
 	if (TEvent::EAll == e) {
 		for (auto it = mListeners.begin(); it != mListeners.end(); ++it) {
 			TEvent event = it->first;
-			RemoveListenerMapListenerForEvent(listener, event);
+			RemoveListenerForEvent(listener, event);
 		}
 	}
 	else {
-		RemoveListenerMapListenerForEvent(listener, e);
+		RemoveListenerForEvent(listener, e);
 	}
 
 	return OK;
@@ -119,17 +120,15 @@ GlfwInputManager::ListenerMap& GlfwInputManager::GetListenerMap() {
 //
 // *************************************************
 
-void GlfwInputManager::RemoveListenerMapListenerForEvent(IListener * listener, TEvent e) {
+void GlfwInputManager::RemoveListenerForEvent(IListener * listener, TEvent e) {
+
 	for(auto prioritiesIt = mListeners[e].begin(); prioritiesIt != mListeners[e].end(); ++prioritiesIt) {
-		std::vector<IListener *> listeners = prioritiesIt->second;
-		auto listenersIt = listeners.begin();
-		while (listenersIt != listeners.end()) {
-			if (listener == *listenersIt) {
-				listenersIt = listeners.erase(listenersIt);
-			} else
-				++listenersIt;
+		if (prioritiesIt->second == listener) {
+			prioritiesIt = mListeners[e].erase(prioritiesIt);
+			break;
 		}
 	}
+
 }
 
 // *************************************************
@@ -141,11 +140,7 @@ void GlfwInputManager::MouseMove(GLFWwindow * window, double xpos, double ypos) 
 
 	if (listenerMap[TEvent::EMouseMove].size()) {
 		for (auto prioritiesIt = listenerMap[TEvent::EMouseMove].begin(); prioritiesIt != listenerMap[TEvent::EMouseMove].end(); ++prioritiesIt) {
-			std::vector<IListener *> listeners = prioritiesIt->second;
-			auto listenersIt = listeners.begin();
-			for (auto listenersIt = listeners.begin(); listenersIt !=listeners.end(); ++listenersIt) {
-				(*listenersIt)->ProcessEvent(CEventMouseMove(static_cast<float>(xpos), static_cast<float>(ypos)));
-			}
+			prioritiesIt->second->ProcessEvent(CEventMouseMove(static_cast<float>(xpos), static_cast<float>(ypos)));
 		}
 	}
 }
@@ -166,11 +161,7 @@ void GlfwInputManager::MouseClick(GLFWwindow * window, int button, int action, i
 
 	if (listenerMap[TEvent::EMouseClick].size()) {
 		for (auto prioritiesIt = listenerMap[TEvent::EMouseClick].begin(); prioritiesIt != listenerMap[TEvent::EMouseClick].end(); ++prioritiesIt) {
-			std::vector<IListener *> listeners = prioritiesIt->second;
-			auto listenersIt = listeners.begin();
-			for (auto listenersIt = listeners.begin(); listenersIt != listeners.end(); ++listenersIt) {
-				(*listenersIt)->ProcessEvent(CEventMouseClick(mouseButton));
-			}
+			prioritiesIt->second->ProcessEvent(CEventMouseClick(mouseButton));
 		}
 	}
 }
@@ -184,11 +175,7 @@ void GlfwInputManager::KeyPressed(GLFWwindow * window, int key, int scancode, in
 	
 	if (listenerMap[TEvent::EKeyPressed].size()) {
 		for (auto prioritiesIt = listenerMap[TEvent::EKeyPressed].begin(); prioritiesIt != listenerMap[TEvent::EKeyPressed].end(); ++prioritiesIt) {
-			std::vector<IListener *> listeners = prioritiesIt->second;
-			auto listenersIt = listeners.begin();
-			for (auto listenersIt = listeners.begin(); listenersIt !=listeners.end(); ++listenersIt) {
-				(*listenersIt)->ProcessEvent(CEventKeyPressed(key));
-			}
+			prioritiesIt->second->ProcessEvent(CEventKeyPressed(key));
 		}
 	}
 }

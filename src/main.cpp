@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include "entityplayer.h"
+#include "entityreverseplayer.h"
 #include <Windows.h>
 
 
@@ -27,6 +28,8 @@ int main() {
 
 	EntityPlayer * pPlayer = new EntityPlayer();
 	pPlayer->Init();
+	EntityReversePlayer * pReversePlayer = new EntityReversePlayer(0, 400.f, 400.f);
+	pReversePlayer->Init();
 
 	// Bucle principal
 	double lastTime = pWindowManager->GetTime();
@@ -48,12 +51,14 @@ int main() {
 
 		// Actualizacion de logica del programa
 		pPlayer->Update(deltaTime);
+		pReversePlayer->Update(deltaTime);
 
 		/********************************/
 
 		// Pintado
 		pWindowManager->ClearColorBuffer(0,0,0);
 		pPlayer->Render();
+		pReversePlayer->Render();
 	
 		/********************************/
 
@@ -62,6 +67,7 @@ int main() {
 		pWindowManager->WaitEvents();
 	}
 
+	delete pReversePlayer;
 	delete pPlayer;
 
 	return 0;

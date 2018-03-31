@@ -9,7 +9,7 @@ class GlfwInputManager : public IEventManager {
 	
 public:
 
-	typedef std::map<TEvent, std::map<int, std::vector<IListener *>>> ListenerMap;
+	typedef std::map<TEvent, std::multimap<int, IListener *>> ListenerMap;
 
 	static GlfwInputManager * Instance();
 	~GlfwInputManager();
@@ -36,5 +36,5 @@ private:
 	GlfwWindowManager  *m_pWindowManager;
 	bool                mInitialized;
 
-	void RemoveListenerMapListenerForEvent(IListener * listener, TEvent e);
+	void RemoveListenerForEvent(IListener * listener, TEvent e);
 };

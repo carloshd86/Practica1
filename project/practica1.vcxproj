@@ -22,6 +22,7 @@
     <ClCompile Include="..\lib\pugixml.cpp" />
     <ClCompile Include="..\src\application.cpp" />
     <ClCompile Include="..\src\entityplayer.cpp" />
+    <ClCompile Include="..\src\entityreverseplayer.cpp" />
     <ClCompile Include="..\src\font.cpp" />
     <ClCompile Include="..\src\glfwwindowmanager.cpp" />
     <ClCompile Include="..\src\glfwinputmanager.cpp" />
@@ -40,6 +41,7 @@
     <ClInclude Include="..\src\collision_funcs.h" />
     <ClInclude Include="..\src\entity.h" />
     <ClInclude Include="..\src\entityplayer.h" />
+    <ClInclude Include="..\src\entityreverseplayer.h" />
     <ClInclude Include="..\src\events.h" />
     <ClInclude Include="..\src\eventmanager.h" />
     <ClInclude Include="..\src\font.h" />
